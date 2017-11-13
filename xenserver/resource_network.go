@@ -30,6 +30,7 @@ const (
 	networkSchemaDescription = "description"
 	networkSchemaBridge      = "bridge"
 	networkSchemaMTU         = "mtu"
+	networkSchemaManaged     = "managed"
 )
 
 func resourceNetwork() *schema.Resource {
@@ -58,7 +59,14 @@ func resourceNetwork() *schema.Resource {
 
 			networkSchemaBridge: &schema.Schema{
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
+				Computed: true,
+			},
+
+			networkSchemaManaged: &schema.Schema{
+				Type:     schema.TypeBool,
+				Optional: true,
+				Computed: true,
 				ForceNew: true,
 			},
 		},
@@ -73,6 +81,7 @@ func resourceNetworkCreate(d *schema.ResourceData, m interface{}) error {
 		NameDescription: d.Get(networkSchemaDescription).(string),
 		MTU:             d.Get(networkSchemaMTU).(int),
 		Bridge:          d.Get(networkSchemaBridge).(string),
+		Managed:         d.Get(networkSchemaManaged).(bool),
 	}
 
 	if networkRef, err := c.client.Network.Create(c.session, networkRecord); err == nil {
@@ -86,6 +95,10 @@ func resourceNetworkCreate(d *schema.ResourceData, m interface{}) error {
 		}
 		log.Println("UUID is ", network.UUID)
 		d.SetId(network.UUID)
+		d.Set(networkSchemaName, network.Name)
+		d.Set(networkSchemaDescription, network.Description)
+		d.Set(networkSchemaMTU, network.MTU)
+		d.Set(networkSchemaBridge, network.Bridge)
 	} else {
 		log.Println("Network not created!")
 		return err

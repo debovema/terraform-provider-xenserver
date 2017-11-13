@@ -37,6 +37,7 @@ type NetworkDescriptor struct {
 	Description string
 	Bridge      string
 	MTU         int
+	Managed     bool
 
 	NetworkRef xenAPI.NetworkRef
 }
@@ -180,6 +181,7 @@ func (this *NetworkDescriptor) Query(c *Connection) error {
 	this.Description = network.NameDescription
 	this.MTU = network.MTU
 	this.Bridge = network.Bridge
+	this.Managed = network.Managed
 
 	return nil
 }

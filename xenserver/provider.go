@@ -39,6 +39,7 @@ func Provider() terraform.ResourceProvider {
 			"xenserver_vm":      resourceVM(),
 			"xenserver_vdi":     resourceVDI(),
 			"xenserver_network": resourceNetwork(),
+			"xenserver_vlan":    resourceVLAN(),
 		},
 
 		ConfigureFunc: providerConfigure,
